@@ -2,10 +2,12 @@
 import re
 import time
 from random import choice
-
 import requests
+from urllib import request
 from bs4 import BeautifulSoup
-from selenium import webdriver
+import multiprocessing
+import time
+import urllib
 
 
 #隨機獲取一個header
@@ -44,23 +46,24 @@ def get_ip():
     port = re.findall(port_compile,str(data))                   # 获取所有端口
     return [":".join(i) for i in zip(ip,port)]                  # 组合IP+端口，如：115.112.88.23:8080
 
+urlt = "https://s.taobao.com/search?q=%E6%95%8F%E6%84%9F%E8%82%8C%E8%82%A4cellapy&imgfile=&js=1&stats_click=search_radio_all%3A1&initiative_id=staobaoz_20181225&ie=utf8";
 #執行pro
+
 ipis = get_ip();
-success=0
-for isi in ipis:
-    options =  webdriver.ChromeOptions();
-    options.add_argument('lang=zh_CN.UTF-8');
-    #options.add_argument('--headless');
-    options.add_argument('--no-sandbox');
-    options.add_argument('user-agent="'+selectUserAgent()+'"');
-    print('--proxy-server=http://'+isi);
-    #options.add_argument('--proxy-server=https://%s' % isi);
-
-    driver = webdriver.Chrome(chrome_options = options);
-    driver.get('https://www.taobao.com');
-    driver.get('https://s.taobao.com/search?q=cellapy%E4%BF%AE%E6%8A%A4%E9%9C%9C&imgfile=&commend=all&ssid=s5-e&search_type=item&sourceId=tb.index&spm=a21bo.2017.201856-taobao-item.1&ie=utf8&initiative_id=tbindexz_20170306');
-    driver.get('https://detail.m.tmall.hk/item.htm?spm=a230r.1.14.4.6d8841celXL7CE&id=577128927497&cm_id=140105335569ed55e27b&abbucket=9')
-
+tt = 0
+for a3 in ipis:
+    proxy_handler = urllib.request.ProxyHandler({'http': a3});
+    opener = urllib.request.build_opener(proxy_handler);
+    urllib.request.install_opener(opener);
+    print (ipis);
+    usera = selectUserAgent();
+    req = urllib.request.Request(url=urlt, headers=usera,);
+    urllib.request.urlopen(req)
+    html = req.read();
+    if "egf寡肽" in html:
+        print("搞定一个");
+    else:
+        print("砸了一个");
     if '未连接到互联网' in driver.page_source:
         print('代理不好使啦')
         continue
@@ -71,15 +74,6 @@ for isi in ipis:
         print('代理太慢啦！')
         continue
 
-    driver.find_element_by_xpath("/html/body/div[@class='page']/section[@class='actionBar-bg']/div[@id='s-actionBar-container']/div[@class='action-bar-wrap j-bottom-bar  ']/div[@class='trade']/a[@class='cart ']").click();
-    time.sleep(1)
-    driver.find_element_by_xpath("/html/body/div[@class='widgets-cover show']/div[@class='cover-content']/div[@class='sku-wrap']/div[@class='body']/div[@class='body-item']/ul[@class='sku-list-wrap']/li/div[@class='items']/a[2]").click();
-    time.sleep(2)
-    driver.find_element_by_xpath("/html/body/div[@class='widgets-cover show']/div[@class='cover-content']/div[@class='sku-wrap']/div[@class='footer trade']/a[@class='ok']").click();
-    time.sleep(1)
-    driver.get('https://register.tmall.com/?spm=a2107.1.0.0.7dd28L508L50TS&f=login')
-
     time.sleep(1)
     print(success)
-    print(isi)
-    success+=1
+    tt = tt+1;
