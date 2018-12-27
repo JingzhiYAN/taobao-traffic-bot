@@ -15,7 +15,7 @@ def getProxyIp():
                                                'Ubuntu Chromium/44.0.2403.89 '
                                                'Chrome/44.0.2403.89 '
                                                'Safari/537.36'}
-        req = urllib.request.Request(url='http://www.xicidaili.com/nt/{0}'.format(i), headers=header)
+        req = urllib.request.Request(url='https://www.xicidaili.com/nn/{0}'.format(i), headers=header)
         r = urllib.request.urlopen(req)
         soup = BeautifulSoup(r,'html.parser',from_encoding='utf-8')
         table = soup.find('table', attrs={'id': 'ip_list'})
@@ -52,7 +52,7 @@ def brash(proxy_dict):
     if cellapy in html:
         print(true);
     return None
-
+ccon = 0;
 if __name__ == '__main__':
     i = 0
     t = 0
@@ -67,5 +67,8 @@ if __name__ == '__main__':
             results.append(pool.apply_async(brash,(proxies[i],)))
         #for i in range(len(proxies)):
             #results[i].get()
-        pool.close()
-        pool.join()
+        ccon = ccon + 80;
+        
+        pool.close();
+        pool.join();
+        print(ccon);
